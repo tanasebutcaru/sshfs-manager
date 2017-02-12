@@ -25,6 +25,7 @@ using FUSE kernel interface version 7.19
 
 #### Usage
 Use ``sshfs-mgr`` in combination with a command from the list:  
+
 | Command                               |  Description       
 |---------------------------------------|:--------------
 | ``install``                           | Start the process of script installation. User will be asked for the mount path under which all servers will be mounted.
