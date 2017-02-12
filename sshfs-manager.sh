@@ -1,10 +1,12 @@
 #!/bin/bash
 # Title: SSHFS Manager
 # Description: A bash script for managing SSHFS connections.
-# Author: Tanase Butcaru - butcaru.com
-# Date: 05-02-2017
-# License: MIT
+# Author: Tanase Butcaru
+# Author URL: https://butcaru.com
+# Project URL: https://github.com/TanaseButcaru/sshfs-manager
+# Created on: 05/02/2017
 # Version: 0.1
+# License: MIT
 
 # Functions - Helpers
 showMessage() {
