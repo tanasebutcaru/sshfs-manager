@@ -22,3 +22,14 @@ using FUSE kernel interface version 7.19
 3. Run ``bash sshfs-manager.sh install`` and follow the install instructions on the screen.
 4. Close current terminal and open a new one.
 5. Run ``sshfs-mgr --help`` and enjoy!
+
+#### Usage
+Use ``sshfs-mgr`` in combination with a command from the list:  
+| Command                               |  Description       
+|---------------------------------------|:--------------
+| ``install``                           | Start the process of script installation. User will be asked for the mount path under which all servers will be mounted.
+| ``add-server``                        | Add new server form with required data: server address, SSH user, source & mount directories and SSHFS options.
+| ``connect``                           | A list of added servers will be displayed and the user will have to choose a server to connect to.
+| ``disconnect``                        | Disconnect all connected servers.
+| ``disconnect [server]``               | Disconnect a specific connected server by providing the server address.
+| ``help`` / ``--help``                 | Print help menu.
