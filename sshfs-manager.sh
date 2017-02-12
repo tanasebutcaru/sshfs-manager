@@ -26,6 +26,7 @@ showMessage() {
             [USER_INPUT_INVALID_SERVER_INDEX]='[SSHFS-MGR] Please select a valid number from the list. Exiting...\n'
             [SERVER_NOT_FOUND]='[SSHFS-MGR] Could not find server %s in local database. Exiting...\n'
             [SERVER_CONNECTING]='[SSHFS-MGR] Connecting to server %s...\n'
+            [SERVER_CONNECT_SUCCESS]='[SSHFS-MGR] Server is now connected.\n'
             [SERVER_DISCONNECT_ONE]='[SSHFS-MGR] Server is now disconnected.\n'
             [SERVER_DISCONNECT_ALL]='[SSHFS-MGR] All servers are now disconnected.\n'
             [SERVER_DISCONNECTING]='[SSHFS-MGR] Disconnecting server %s...\n'
@@ -306,6 +307,7 @@ connect() {
 
     # Run sshfs command...
     sshfs $user@$domain:$sourceDir $fullMountPath $sshfsOptions
+    showMessage SERVER_CONNECT_SUCCESS
 }
 
 disconnect() {
