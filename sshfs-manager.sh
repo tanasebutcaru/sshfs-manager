@@ -76,22 +76,6 @@ checkIfServerExists() {
     return $result
 }
 
-getServerDomainByMountDir() {
-    mountDir=$1
-
-    for key in ${!servers[*]}; do
-        keyDomain="${key%%,*}"
-        keyProperty="${key#*,}"
-        
-        if [ ${servers[$keyDomain,'mountDir']} == $mountDir ]; then
-            echo "$keyDomain"
-            break
-        fi
-    done
-
-    return 1
-}
-
 # Functions - Actions
 launchScript() {
     if [ $action == 'install' ]; then
@@ -333,15 +317,8 @@ disconnect() {
 }
 
 disconnectAll() {
-    dirList=`ls -l --time-style="long-iso" ${config[mountPath]} | egrep '^d' | awk '{print $8}'`
-
-    for dirName in $dirList; do
-        serverDomain=`getServerDomainByMountDir $dirName`
-        if [ ! $serverDomain ]; then
-            continue
-        else 
-            disconnectOne $serverDomain
-        fi
+    for index in ${!serverList[*]}; do
+        disconnectOne ${serverList[$index]}
     done
 
     showMessage SERVER_DISCONNECT_ALL
