@@ -27,7 +27,9 @@ showMessage() {
             [SERVER_NOT_FOUND]='[SSHFS-MGR] Could not find server %s in local database. Exiting...\n'
             [SERVER_CONNECTING]='[SSHFS-MGR] Connecting to server %s...\n'
             [SERVER_CONNECT_SUCCESS]='[SSHFS-MGR] Server is now connected.\n'
+            [SERVER_CONNECT_ERROR]='[SSHFS-MGR] Error while connecting to server.\n'
             [SERVER_DISCONNECT_ONE]='[SSHFS-MGR] Server is now disconnected.\n'
+            [SERVER_DISCONNECT_ONE_ERROR]='[SSHFS-MGR] Error while disconnecting server.\n'
             [SERVER_DISCONNECT_ALL]='[SSHFS-MGR] All servers are now disconnected.\n'
             [SERVER_DISCONNECTING]='[SSHFS-MGR] Disconnecting server %s...\n'
             [ADD_SERVER_INFO]='[SSHFS-MGR] Adding new server...\n'
@@ -172,10 +174,21 @@ installNew() {
         mkdir -p $mountPath;
     fi
 
-    # Copy script into install directory
+   # Copy script into install directory
     scriptFileAbsolutePath="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/$(basename "${BASH_SOURCE[0]}")"
-    scriptFileInstallPath="$scriptInstallDir/${BASH_SOURCE[0]}"
+    scriptFileInstallPath="$scriptInstallDir/$(basename "${BASH_SOURCE[0]}")"
+
     cp $scriptFileAbsolutePath $scriptFileInstallPath
+
+    bashCompletion="$userHome/.bash_completion"
+    # Check bash_completion 
+    if [[ ! -f "${bashCompletion}" ]]; then
+        touch $bashCompletion
+    fi
+    # Check and add autocompletion for script
+    if [ `grep -c "${scriptRunCmd}" "${bashCompletion}"` = 0 ]; then
+        printf "# add tab completion for ${scriptRunCmd}\ncomplete -W \"help install add-server connect disconnect\" ${scriptRunCmd}\n" >> $bashCompletion
+    fi
 
     # Save configuration
     touch $scriptDataFilePath
@@ -206,16 +219,16 @@ addServer() {
     read -e domain
 
     showMessage ADD_SERVER_USER
-	read -e user
+    read -e user
 
-	showMessage ADD_SERVER_SOURCEDIR
+    showMessage ADD_SERVER_SOURCEDIR
     read -e sourceDir
 
     showMessage ADD_SERVER_MOUNTDIR
-	read -e mountDir
+    read -e mountDir
 
     showMessage ADD_SERVER_SSHFSOPTIONS
-	read -e sshfsOptions
+    read -e sshfsOptions
 
     # Save server data
     saveKey="[$domain]"
@@ -279,10 +292,10 @@ connect() {
 
     # Get server config
     domain=${servers[$serverDomain,'domain']}
-	user=${servers[$serverDomain,'user']}
-	sourceDir=${servers[$serverDomain,'sourceDir']}
-	mountDir=${servers[$serverDomain,'mountDir']}
-	sshfsOptions=${servers[$serverDomain,'sshfsOptions']}
+    user=${servers[$serverDomain,'user']}
+    sourceDir=${servers[$serverDomain,'sourceDir']}
+    mountDir=${servers[$serverDomain,'mountDir']}
+    sshfsOptions=${servers[$serverDomain,'sshfsOptions']}
     
     fullMountPath=${config[mountPath]}/$mountDir
 
@@ -291,7 +304,14 @@ connect() {
 
     # Run sshfs command...
     sshfs $user@$domain:$sourceDir $fullMountPath $sshfsOptions
-    showMessage SERVER_CONNECT_SUCCESS
+    RET=$?
+
+    if [ "$RET" = "0" ]; then
+        showMessage SERVER_CONNECT_SUCCESS
+    else
+        showMessage SERVER_CONNECT_ERROR
+    fi
+
 }
 
 disconnect() {
@@ -311,7 +331,6 @@ disconnect() {
             exit 0;
         else
             disconnectOne $serverDomain
-            showMessage SERVER_DISCONNECT_ONE
         fi
     fi
 }
@@ -334,6 +353,13 @@ disconnectOne() {
     if [ $dirIsMounted == 1 ]; then
         showMessage SERVER_DISCONNECTING $serverDomain
         fusermount -u ${fullMountPath}
+        RET=$?
+
+        if [ "$RET" = "0" ]; then
+            showMessage SERVER_DISCONNECT_ONE
+        else
+            showMessage SERVER_DISCONNECT_ONE_ERROR
+        fi
     fi
 }
 
