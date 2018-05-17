@@ -306,7 +306,7 @@ connect() {
     checkMountingPath $mountDir
 
     # Run sshfs command...
-    sshfs $user@$domain:$sourceDir $fullMountPath $sshfsOptions
+    sshfs $user@$domain:$sourceDir $fullMountPath -o $sshfsOptions
     RET=$?
 
     if [ "$RET" = "0" ]; then
