@@ -29,7 +29,7 @@ Use ``sshfs-mgr`` in combination with a command from the list:
 | Command                               |  Description       
 |---------------------------------------|:--------------
 | ``install``                           | Start the process of script installation. User will be asked for the mount path under which all servers will be mounted.
-| ``add-server``                        | Add new server form with required data: server address, SSH user, source & mount directories and SSHFS options.
+| ``add-server`` / ``add``                        | Add new server form with required data: server address, SSH user, source & mount directories and SSHFS options.
 | ``connect``                           | A list of added servers will be displayed and the user will have to choose a server to connect to.
 | ``disconnect``                        | Disconnect all connected servers.
 | ``disconnect [server]``               | Disconnect a specific connected server by providing the server address.
