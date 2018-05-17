@@ -37,7 +37,7 @@ showMessage() {
             [ADD_SERVER_USER]='\t SSH username: '
             [ADD_SERVER_SOURCEDIR]='\t Server source directory to be mounted (eg: public_html): '
             [ADD_SERVER_MOUNTDIR]='\t Local mount directory under global mount path (eg: mydomain_com): '
-            [ADD_SERVER_SSHFSOPTIONS]='\t SSHFS options (any option provided by sshfs --help) \n\t Sample option: \n\t\t-o auto_unmount,transform_symlinks,follow_symlinks,ServerAliveInterval=30,IdentityFile=~/.ssh/id_rsa,idmap=user,uid=1000,gid=1000\n\t Options: '
+            [ADD_SERVER_SSHFSOPTIONS]='\t SSHFS options (any option provided by sshfs --help) \n\t Sample option: \n\t\t-o reconnect,auto_unmount,transform_symlinks,follow_symlinks,ServerAliveInterval=30,IdentityFile=~/.ssh/id_rsa,idmap=user,uid=1000,gid=1000\n\t Options: '
             [ADD_SERVER_SUCCESS]="[SSHFS-MGR] Server has been successfully saved.\n"
             [ADD_SERVER_SUCCESS_POST]='[SSHFS-MGR] You can now connect to %s using the "connect" command.\n'
             [LOAD_DATA_FILE_ERROR]='[SSHFS-MGR] No installation found. Please run the "install" command.\n'
