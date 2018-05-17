@@ -86,7 +86,7 @@ launchScript() {
         loadDataFile
     fi
 
-    if [ $action == 'add-server' ]; then
+    if [ $action == 'add-server' ] || [ $action == 'add' ]; then
         addServer
     elif [ $action == 'connect' ]; then
         connectPrompt
@@ -94,6 +94,8 @@ launchScript() {
         disconnect $actionArgument
     elif [ $action == 'help' ] || [ $action == '--help' ]; then
         helpMenu
+    elif [ $action == "no_action" ]; then
+        connectPrompt
     else
         showMessage INVALID_COMMAND $scriptRunCmd
     fi
