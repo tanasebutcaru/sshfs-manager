@@ -3,7 +3,7 @@
 # Description: A bash script for managing SSHFS connections.
 # Author: Tanase Butcaru
 # Author URL: https://butcaru.com
-# Project URL: https://github.com/TanaseButcaru/sshfs-manager
+# Project URL: https://github.com/tbutcaru/sshfs-manager
 # Created on: 05/02/2017
 # Version: 0.1
 # License: MIT
