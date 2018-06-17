@@ -22,8 +22,9 @@ showMessage() {
             [INVALID_COMMAND]='[SSHFS-MGR] Please run one of the available commands from the help menu (%s --help).\n'
             [NO_SERVERS]='[SSHFS-MGR] No servers were found. Add a server using the "add-server" command.\n'
             [AVAILABLE_SERVERS]='[SSHFS-MGR] Available servers:\n'
-            [USER_INPUT_SERVER_INDEX]='\n[SSHFS-MGR] Enter a number from the list: '
+            [USER_INPUT_SERVER_INDEX]='\n[SSHFS-MGR] Enter a number from the list (supported comma separated numbers): '
             [USER_INPUT_INVALID_SERVER_INDEX]='[SSHFS-MGR] Please select a valid number from the list. Exiting...\n'
+            [USER_INPUT_ILLEGAL_SERVER_INDEX]='[SSHFS-MGR] Please select a valid comma separated number number(s) from the list. Exiting...\n'
             [SERVER_NOT_FOUND]='[SSHFS-MGR] Could not find server %s in local database. Exiting...\n'
             [SERVER_CONNECTING]='[SSHFS-MGR] Connecting to server %s...\n'
             [SERVER_CONNECT_SUCCESS]='[SSHFS-MGR] Server is now connected.\n'
@@ -268,21 +269,50 @@ connectPrompt() {
         serverDomain=${serverList[$index]}
         mountDir=${servers[$serverDomain,'mountDir']}
         domain=${serverList[$index]}
-        printf "\t$index - $mountDir @ $domain \n"
+	if mountpoint -q "${config[mountPath]}/$mountDir"; then
+	    mountPointStatus="(\e[1;92mOnline\e[0m)"
+	else
+	    mountPointStatus="(\e[1;91mOffline\e[0m)"
+	fi
+
+        printf "\t$index - $mountPointStatus # $mountDir @ $domain\n"
     done
 
     # Let user choose a server from the list
     showMessage USER_INPUT_SERVER_INDEX
     read -e selectedIndex
 
-    # Check if selection exists on the list
-    if ! checkIfServerExists $selectedIndex true; then
+    # Multiple connect support (comma separated number)
+    allowedChar='^[0-9,]*$'
+    if [[ $selectedIndex =~ $allowedChar ]]; then
+       if [[ $selectedIndex == *","* ]];then
+          servers=$(echo $selectedIndex | tr "," "\n")
+
+          for index in $servers
+          do
+             # Check if selection exists on the list
+             if ! checkIfServerExists $index true; then
+                  showMessage USER_INPUT_INVALID_SERVER_INDEX
+                  exit 0;
+             fi
+
+             # Connect!
+             connect ${serverList[$index]}
+          done
+       else
+           # Check if selection exists on the list
+           if ! checkIfServerExists $selectedIndex true; then
+                showMessage USER_INPUT_INVALID_SERVER_INDEX
+                exit 0;
+           fi
+
+           # Connect!
+           connect ${serverList[$selectedIndex]}
+       fi
+    else
         showMessage USER_INPUT_INVALID_SERVER_INDEX
         exit 0;
     fi
-
-    # Connect!
-    connect ${serverList[$selectedIndex]}
 }
 
 connect() {
