@@ -23,8 +23,7 @@ showMessage() {
             [NO_SERVERS]='[SSHFS-MGR] No servers were found. Add a server using the "add-server" command.\n'
             [AVAILABLE_SERVERS]='[SSHFS-MGR] Available servers:\n'
             [USER_INPUT_SERVER_INDEX]='\n[SSHFS-MGR] Enter a number from the list (supported comma separated numbers): '
-            [USER_INPUT_INVALID_SERVER_INDEX]='[SSHFS-MGR] Please select a valid number from the list. Exiting...\n'
-            [USER_INPUT_ILLEGAL_SERVER_INDEX]='[SSHFS-MGR] Please select a valid comma separated number number(s) from the list. Exiting...\n'
+            [USER_INPUT_INVALID_SERVER_INDEX]='[SSHFS-MGR] Please enter a valid number or multiple comma separated numbers from the list. Existing...\n'
             [SERVER_NOT_FOUND]='[SSHFS-MGR] Could not find server %s in local database. Exiting...\n'
             [SERVER_CONNECTING]='[SSHFS-MGR] Connecting to server %s...\n'
             [SERVER_CONNECT_SUCCESS]='[SSHFS-MGR] Server is now connected.\n'
@@ -33,6 +32,8 @@ showMessage() {
             [SERVER_DISCONNECT_ONE_ERROR]='[SSHFS-MGR] Error while disconnecting server.\n'
             [SERVER_DISCONNECT_ALL]='[SSHFS-MGR] All servers are now disconnected.\n'
             [SERVER_DISCONNECTING]='[SSHFS-MGR] Disconnecting server %s...\n'
+            [SERVER_STATUS_ONLINE]='Online'
+            [SERVER_STATUS_OFFLINE]='Offline'
             [ADD_SERVER_INFO]='[SSHFS-MGR] Adding new server...\n'
             [ADD_SERVER_DOMAIN]='\t Server address (eg: mydomain.com): '
             [ADD_SERVER_USER]='\t SSH username: '
@@ -270,11 +271,10 @@ connectPrompt() {
         mountDir=${servers[$serverDomain,'mountDir']}
         domain=${serverList[$index]}
 	if mountpoint -q "${config[mountPath]}/$mountDir"; then
-	    mountPointStatus="(\e[1;92mOnline\e[0m)"
+	    mountPointStatus="(\e[1;92m$(showMessage SERVER_STATUS_ONLINE)\e[0m)"
 	else
-	    mountPointStatus="(\e[1;91mOffline\e[0m)"
+	    mountPointStatus="(\e[1;91m$(showMessage SERVER_STATUS_OFFLINE)\e[0m)"
 	fi
-
         printf "\t$index - $mountPointStatus # $mountDir @ $domain\n"
     done
 
